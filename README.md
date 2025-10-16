@@ -1,8 +1,5 @@
-<div align="center">
 
-<img src="./assets/logo.jpg" alt="Project Logo" width="200">
-
-# 🚗 Car Purchase Amount Prediction AI  예측
+# 🚗 Car Purchase Amount Prediction AI 
 
 **A machine learning-powered web application that predicts the potential purchase amount of a car based on customer data using a Linear Regression model.**
 
@@ -25,13 +22,13 @@ This project tackles the problem of predicting how much a customer is likely to 
 ### Web Application Interface
 *This is the main page where users can input customer data.*
 <div align="center">
-  <img src="./assets/page1.png" alt="Application User Interface" width="80%">
+  <img src="./assets/page1.jpeg" alt="Application User Interface" width="80%">
 </div>
 
 ### Prediction Results
 *After submitting the data, the application shows the predicted purchase amount.*
 <div align="center">
-  <img src="./assets/page3.png" alt="Prediction Output Example" width="80%">
+  <img src="./assets/page3.jpeg" alt="Prediction Output Example" width="80%">
 </div>
 
 ---
