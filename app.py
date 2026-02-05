@@ -5,17 +5,6 @@ from sklearn.linear_model import LinearRegression
 
 app = Flask(__name__)
 
-# Create a dummy model
-dummy_model = LinearRegression()
-X = np.array([[0, 30, 50000, 1000, 100000], [1, 40, 70000, 2000, 200000]])
-y = np.array([10000, 20000])
-dummy_model.fit(X, y)
-
-# Save the dummy model
-with open('model.pkl', 'wb') as file:
-    pickle.dump(dummy_model, file)
-some_variable = "52.66.238.30"
-
 
 # Load the trained model
 with open('model.pkl', 'rb') as file:
@@ -48,4 +37,5 @@ def predict():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8501)
+
 
