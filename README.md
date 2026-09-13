@@ -36,7 +36,8 @@ This project tackles the problem of predicting how much a customer is likely to 
 ## ✨ Core Features
 
 * **User-Friendly Web Form:** An intuitive interface for inputting customer details.
-* **Real-Time Prediction:** The backend Flask server provides instant predictions using the trained model.
+* **Real-Time Prediction:** The backend Flask server provides instant predictions using the trained neural network.
+* **Deep Learning Model:** A multi-layer feedforward neural network (not a simple linear model) captures non-linear relationships in the data.
 * **Containerized & Portable:** The entire application is packaged in a Docker container for easy deployment.
 * **Cloud-Ready:** Deployed on an AWS EC2 instance for public accessibility.
 * **Data-Driven Model:** The model is trained on a real-world dataset of customer financial data.
@@ -48,22 +49,29 @@ This project tackles the problem of predicting how much a customer is likely to 
 | Category | Technologies |
 |---|---|
 | **Backend** | Python, Flask |
-| **Machine Learning** | Scikit-learn, Pandas, NumPy |
+| **Machine Learning / Deep Learning** | TensorFlow, Keras, Scikit-learn (preprocessing & metrics), Pandas, NumPy |
 | **Frontend**| HTML, CSS (as part of the Flask template) |
 | **Containerization** | Docker |
 | **Cloud Deployment** | AWS EC2 |
 
 ---
 
-## 🤖 Machine Learning Workflow
+## 🤖 Neural Network Workflow
 
 The model was developed and trained in the `model.ipynb` Jupyter Notebook.
 
-1.  **Data Loading & Exploration:** The `customer_data_linear_regression.csv` dataset was loaded into a Pandas DataFrame. Initial analysis was performed to understand the relationships between features.
-2.  **Data Preprocessing:** Features were selected, and the data was split into training and testing sets. Categorical features like 'Gender' were handled appropriately.
-3.  **Model Training:** A **Linear Regression** model from Scikit-learn was trained on the preprocessed data to predict `Car Purchase Amount`.
-4.  **Model Evaluation:** The model's performance was evaluated on the test set. Key metrics like R-squared score and Mean Absolute Error were analyzed.
-5.  **Model Serialization:** The final trained model was saved to `model.pkl` using joblib for use in the Flask application.
+1. **Data Loading & Exploration:** The `customer_data_linear_regression.csv` dataset was loaded into a Pandas DataFrame, and a Seaborn pairplot was used to visualize relationships between features.
+2. **Feature Selection:** Non-predictive columns (`Customer Name`, `Customer e-mail`, `Country`) and the target (`Car Purchase Amount`) were dropped from the input features, leaving `Gender`, `Age`, `Annual Salary`, `Credit Card Debt`, and `Net Worth`.
+3. **Preprocessing:** The categorical `Gender` column was label-encoded (`Female` → 1, `Male` → 0). Both the input features (`X`) and the target (`y`) were then scaled to a 0–1 range using `MinMaxScaler`.
+4. **Train/Test Split:** The scaled data was split into training and testing sets (75% train / 25% test).
+5. **Model Architecture:** A Keras `Sequential` neural network was built with:
+   - Input layer accepting 5 features
+   - Hidden layer 1: `Dense(25, activation='relu')`
+   - Hidden layer 2: `Dense(25, activation='relu')`
+   - Output layer: `Dense(1, activation='linear')` for regression
+6. **Compilation & Training:** The model was compiled with the **Adam optimizer** and **Mean Squared Error (MSE)** loss, then trained for **50 epochs** with a batch size of 32 and a 20% validation split. Training/validation loss curves were plotted to check for overfitting.
+7. **Model Evaluation:** Predictions were inverse-transformed back to their original scale, then evaluated against actual values using **Mean Squared Error** and **R² score**.
+8. **Model Serialization:** The trained Keras model was serialized with `pickle` and saved to `model.pkl` for use in the Flask application.
 
 ---
 
@@ -72,14 +80,14 @@ The model was developed and trained in the `model.ipynb` Jupyter Notebook.
 ### 1. **Clone the Repository**
 ```bash
 git clone https://github.com/hemalatha0303/Car_sales_prediction_deployedInAWS.git
-cd [YOUR-REPO-NAME]
+cd Car_sales_prediction_deployedInAWS
 ```
 
 ### 2. **Set Up a Virtual Environment**
 ```bash
 # Create and activate the environment
 python -m venv venv
-source venv/bin/activate  # On Windows: `.\venv\Scripts\activate`
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 ```
 
 ### 3. **Install Dependencies**
@@ -91,7 +99,7 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-> 🎉 Your application is now running at **http://127.0.0.1:5000**!
+> 🎉 Your application is now running at **http://127.0.0.1:8501**!
 
 ---
 
@@ -106,17 +114,17 @@ docker build -t car-prediction-app .
 
 ### 2. **Run the Docker Container**
 ```bash
-docker run -p 5000:5000 car-prediction-app
+docker run -p 8501:8501 car-prediction-app
 ```
-> The application will be accessible at **http://localhost:5000**.
+> The application will be accessible at **http://localhost:8501**.
 
 ---
 
 ## ☁️ Cloud Deployment on AWS EC2
 
 This application was deployed to the cloud using the following steps:
-1.  **Launch an EC2 Instance:** An Amazon Linux or Ubuntu instance was provisioned.
-2.  **Configure Security Group:** The security group was configured to allow incoming traffic on port 80 (HTTP) and port 22 (SSH).
-3.  **Install Docker:** Docker was installed on the EC2 instance.
-4.  **Transfer Files:** The project files (including `app.py`, `Dockerfile`, `model.pkl`, etc.) were securely transferred to the instance.
-5.  **Build & Run Container:** The Docker image was built and run on the EC2 instance, exposing the application to the internet.
+1. **Launch an EC2 Instance:** An Amazon Linux or Ubuntu instance was provisioned.
+2. **Configure Security Group:** The security group was configured to allow incoming traffic on the app's port (8501) and port 22 (SSH).
+3. **Install Docker:** Docker was installed on the EC2 instance.
+4. **Transfer Files:** The project files (including `app.py`, `Dockerfile`, `model.pkl`, etc.) were securely transferred to the instance.
+5. **Build & Run Container:** The Docker image was built and run on the EC2 instance, exposing the application to the internet.
